@@ -52,29 +52,44 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         ## DEFS
         #######
         config[:order].each_with_index do |label, index|
-          if config.has_key? :ds_names
-            command += " DEF:#{label}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:AVERAGE"
+          if label == ''
+            deflabel = 'data'
           else
-            command += " DEF:#{label}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:AVERAGE"
+            deflabel = label
+          end
+          if config.has_key? :ds_names
+            command += " DEF:#{deflabel}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:AVERAGE"
+          else
+            command += " DEF:#{deflabel}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:AVERAGE"
           end
         end
 
         if config[:max]
           config[:order].each_with_index do |label, index|
-            if config.has_key? :ds_names
-              command += " DEF:#{label}_max=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MAX"
+            if label == ''
+              deflabel = 'data'
             else
-              command += " DEF:#{label}_max=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:MAX"
+              deflabel = label
+            end
+            if config.has_key? :ds_names
+              command += " DEF:#{deflabel}_max=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MAX"
+            else
+              command += " DEF:#{deflabel}_max=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:MAX"
             end
           end
         end
 
         if config[:min]
           config[:order].each_with_index do |label, index|
-            if config.has_key? :ds_names
-              command += " DEF:#{label}_min=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MIN"
+            if label == ''
+              deflabel = 'data'
             else
-              command += " DEF:#{label}_min=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:MIN"
+              deflabel = label
+            end
+            if config.has_key? :ds_names
+              command += " DEF:#{deflabel}_min=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MIN"
+            else
+              command += " DEF:#{deflabel}_min=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:MIN"
             end
           end
         end
@@ -83,10 +98,15 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         ###########
         if config[:min]
           config[:order].each_with_index do |label, index|
-            if config.has_key? :titles
-              command += " LINE1:#{label}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{config[:titles][index]} min"
+            if label == ''
+              deflabel = 'data'
             else
-              command += " LINE1:#{label}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{label.capitalize} min"
+              deflabel = label
+            end
+            if config.has_key? :titles
+              command += " LINE1:#{deflabel}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{config[:titles][index]} min"
+            else
+              command += " LINE1:#{deflabel}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{label.capitalize} min"
             end
             if index == config[:order].length - 1
               command += "\\n'"
@@ -98,10 +118,15 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         end
 
         config[:order].each_with_index do |label, index|
-          if config.has_key? :titles
-            command += " #{config[:chart].upcase}:#{label}\\#{config[:pallette][index]}:'#{config[:titles][index]} avg"
+          if label == ''
+            deflabel = 'data'
           else
-            command += " #{config[:chart].upcase}:#{label}\\#{config[:pallette][index]}:'#{label.capitalize} avg"
+            deflabel = label
+          end
+          if config.has_key? :titles
+            command += " #{config[:chart].upcase}:#{deflabel}\\#{config[:pallette][index]}:'#{config[:titles][index]} avg"
+          else
+            command += " #{config[:chart].upcase}:#{deflabel}\\#{config[:pallette][index]}:'#{label.capitalize} avg"
           end
           if index == config[:order].length - 1
             command += "\\n'"
@@ -113,10 +138,15 @@ Pathname.new(RRD_PATH).each_child do |host_path|
 
         if config[:max]
           config[:order].each_with_index do |label, index|
-            if config.has_key? :titles
-              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{config[:titles][index]} max"
+            if label == ''
+              deflabel = 'data'
             else
-              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{label.capitalize} max"
+              deflabel = label
+            end
+            if config.has_key? :titles
+              command += " LINE1:#{deflabel}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{config[:titles][index]} max"
+            else
+              command += " LINE1:#{deflabel}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{label.capitalize} max"
             end
             if index == config[:order].length - 1
               command += "\\n'"

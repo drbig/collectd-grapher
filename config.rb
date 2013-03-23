@@ -10,7 +10,7 @@ RESOLUTIONS = %w{ 24h 7d 100d }
 
 PLUGINS = {
   :cpu => {
-    "cpu" => {
+    "all" => {
       :y_axis_title => 'Jiffies',
       :prefix => 'cpu-',
       :order => %w{ idle user system interrupt nice },
@@ -21,13 +21,27 @@ PLUGINS = {
     }
   },
   :memory => {
-    "mem" => {
+    "all" => {
       :y_axis_title => 'Bytes',
       :prefix => 'memory-',
       :order => %w{ active inactive cache wired free },
       :pallette => %w{ #AAFFAA #AAAAFF #FFAAAA #AAFFFF #FFAAFF },
       :chart => 'area',
       :stack => true,
+      :max => true,
+      :min => false,
+    }
+  },
+  :load => {
+    "all" => {
+      :y_axis_title => 'Load',
+      :prefix => 'load',
+      :order => [''],
+      :ds_names => ['shortterm'],
+      :titles => ['Load short'],
+      :pallette => %w{ #FFAAAA },
+      :chart => 'area',
+      :stack => false,
       :max => true,
       :min => false,
     }
