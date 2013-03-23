@@ -32,6 +32,18 @@ PLUGINS = {
       :min => false,
     }
   },
+  :df => {
+    "all" => {
+      :y_axis_title => 'Bytes',
+      :prefix => 'df_complex-',
+      :order => %w{ used },
+      :pallette => ['#FFAAAA'],
+      :chart => 'area',
+      :stack => false,
+      :max => true,
+      :min => false,
+    }
+  },
   :interface => {
     "octets" => {
       :y_axis_title => 'Octetes/s',
@@ -46,6 +58,33 @@ PLUGINS = {
       :min => false,
     }
   }, 
+  :disk => {
+    "octets" => {
+      :y_axis_title => 'Octetes/s',
+      :prefix => 'disk_octets',
+      :single_file => true,
+      :order => %w{ read write },
+      :titles => %w{ Read Write },
+      :pallette => %w{ #FFAAAA #AAFFAA },
+      :chart => 'line2',
+      :stack => false,
+      :max => true,
+      :min => false,
+    }
+  }, 
+  :df => {
+    "all" => {
+      :y_axis_title => 'Bytes',
+      :prefix => 'df_complex-',
+      :order => %w{ used },
+      :pallette => %w{ #FFAAAA },
+      :chart => 'area',
+      :stack => false,
+      :max => true,
+      :min => false,
+    }
+  }, 
+ 
   :load => {
     "all" => {
       :y_axis_title => 'Load',
