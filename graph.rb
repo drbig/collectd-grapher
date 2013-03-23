@@ -49,6 +49,8 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         command += " -t '#{plugin_path.basename}/#{name} @ #{host_path.basename} - #{res}'"
         command += " -v '#{config[:y_axis_title]}'"
 
+        ## DEFS
+        #######
         config[:order].each_with_index do |label, index|
           if config.has_key? :ds_names
             command += " DEF:#{label}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:AVERAGE"
@@ -77,6 +79,8 @@ Pathname.new(RRD_PATH).each_child do |host_path|
           end
         end
 
+        ## GRAPHING
+        ###########
         if config[:min]
           config[:order].each_with_index do |label, index|
             if config.has_key? :titles
@@ -84,12 +88,12 @@ Pathname.new(RRD_PATH).each_child do |host_path|
             else
               command += " LINE1:#{label}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{label.capitalize} min"
             end
-            command += ':STACK' if (config[:stack] and index > 0)
             if index == config[:order].length - 1
               command += "\\n'"
             else
               command += "'"
             end
+            command += ':STACK' if (config[:stack] and index > 0)
           end
         end
 
@@ -99,12 +103,12 @@ Pathname.new(RRD_PATH).each_child do |host_path|
           else
             command += " #{config[:chart].upcase}:#{label}\\#{config[:pallette][index]}:'#{label.capitalize} avg"
           end
-          command += ':STACK' if (config[:stack] and index > 0)
           if index == config[:order].length - 1
             command += "\\n'"
           else
             command += "'"
           end
+          command += ':STACK' if (config[:stack] and index > 0)
         end
 
         if config[:max]
@@ -114,12 +118,12 @@ Pathname.new(RRD_PATH).each_child do |host_path|
             else
               command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{label.capitalize} max"
             end
-            command += ':STACK' if (config[:stack] and index > 0)
             if index == config[:order].length - 1
               command += "\\n'"
             else
               command += "'"
             end
+            command += ':STACK' if (config[:stack] and index > 0)
           end
         end
 
