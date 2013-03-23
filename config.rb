@@ -32,12 +32,26 @@ PLUGINS = {
       :min => false,
     }
   },
+  :interface => {
+    "octets" => {
+      :y_axis_title => 'Octetes/s',
+      :prefix => 'if_octets',
+      :single_file => true,
+      :order => %w{ rx tx },
+      :titles => %w{ Received Sent },
+      :pallette => %w{ #FFAAAA #AAFFAA },
+      :chart => 'line2',
+      :stack => false,
+      :max => true,
+      :min => false,
+    }
+  }, 
   :load => {
     "all" => {
       :y_axis_title => 'Load',
       :prefix => 'load',
       :single_file => true,
-      :order => ['shortterm', 'longterm'],
+      :order => %w{ shortterm longterm },
       :titles => ['Load short', 'Load long'],
       :pallette => %w{ #FFAAAA #AAFFAA },
       :chart => 'line2',

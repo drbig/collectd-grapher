@@ -49,7 +49,7 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         command += " -t '#{plugin_path.basename}/#{name} @ #{host_path.basename} - #{res}'"
         command += " -v '#{config[:y_axis_title]}'"
 
-        if config.has_key? :single_file
+        if (config.has_key? :single_file) # and (not config.has_key? :ds_names)
           config[:ds_names] = config[:order]
         end
 
