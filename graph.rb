@@ -7,11 +7,17 @@ require_relative 'config.rb'
 
 #
 #
-def highlight(html_color)
+def highlight(html_color, amount)
   html_color.each_char.to_a.collect do |c|
     if c =~ /[0-9A-F]/ and c != 'F'
-      n = c.to_i(16) - CONTRAST
-      (n < 0 ? 0 : n).to_s(16)
+      n = c.to_i(16) + amount
+      (if n < 0
+        0
+      elsif n > 16
+        16
+      else
+        n
+      end).to_s(16)
     else
       c
     end
@@ -50,12 +56,23 @@ Pathname.new(RRD_PATH).each_child do |host_path|
             command += " DEF:#{label}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:AVERAGE"
           end
         end
+
         if config[:max]
           config[:order].each_with_index do |label, index|
             if config.has_key? :ds_names
               command += " DEF:#{label}_max=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MAX"
             else
               command += " DEF:#{label}_max=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:MAX"
+            end
+          end
+        end
+
+        if config[:min]
+          config[:order].each_with_index do |label, index|
+            if config.has_key? :ds_names
+              command += " DEF:#{label}_min=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MIN"
+            else
+              command += " DEF:#{label}_min=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:MIN"
             end
           end
         end
@@ -68,12 +85,24 @@ Pathname.new(RRD_PATH).each_child do |host_path|
           end
           command += ':STACK' if (config[:stack] and index > 0)
         end
+
         if config[:max]
           config[:order].each_with_index do |label, index|
             if config.has_key? :titles
-              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index])}:'#{config[:titles][index]} max'"
+              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{config[:titles][index]} max'"
             else
-              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index])}:'#{label.capitalize} max'"
+              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{label.capitalize} max'"
+            end
+            command += ':STACK' if (config[:stack] and index > 0)
+          end
+        end
+
+        if config[:min]
+          config[:order].each_with_index do |label, index|
+            if config.has_key? :titles
+              command += " LINE1:#{label}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{config[:titles][index]} min'"
+            else
+              command += " LINE1:#{label}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{label.capitalize} min'"
             end
             command += ':STACK' if (config[:stack] and index > 0)
           end
@@ -86,4 +115,4 @@ Pathname.new(RRD_PATH).each_child do |host_path|
   end
 end
 
-puts images.join("\n")
+puts images.sort.join("\n")

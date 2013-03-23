@@ -28,7 +28,8 @@ PLUGINS = {
       :pallette => %w{ #AAFFAA #AAAAFF #FFAAAA #AAFFFF #FFAAFF },
       :chart => 'area',
       :stack => true,
-      :max => true
+      :max => true,
+      :min => false,
     }
   },
   :mbmon => {
@@ -40,7 +41,8 @@ PLUGINS = {
       :pallette => %w{ #FF6666 #66FF66 },
       :chart => 'line2',
       :stack => false,
-      :max => true
+      :max => true,
+      :min => false
     },
     "fan" => {
       :y_axis_title => 'RPM',
@@ -50,7 +52,8 @@ PLUGINS = {
       :pallette => %w{ #FF6666 },
       :chart => 'line2',
       :stack => false,
-      :max => true
+      :max => true,
+      :min => false
     },
     "voltages-core" => {
       :y_axis_title => 'Volt',
@@ -60,7 +63,8 @@ PLUGINS = {
       :pallette => %w{ #FF6666 #66FF66 },
       :chart => 'line2',
       :stack => false,
-      :max => true
+      :max => true,
+      :min => true
     }
 
   }
