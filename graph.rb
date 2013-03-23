@@ -43,20 +43,24 @@ Pathname.new(RRD_PATH).each_child do |host_path|
 
         graph_path = File.join(GRAPH_PATH, "#{host_name}-#{plugin_path.basename}-#{name}-#{res}.png")
         images << graph_path
-        
+
         command = "rrdtool graph #{graph_path}"
         command += " --start end-#{res}"
         command += " -t '#{plugin_path.basename}/#{name} @ #{host_path.basename} - #{res}'"
         command += " -v '#{config[:y_axis_title]}'"
 
+        if config.has_key? :single_file
+          config[:ds_names] = config[:order]
+        end
+
         ## DEFS
         #######
         config[:order].each_with_index do |label, index|
-          if label == ''
-            deflabel = 'data'
-          else
-            deflabel = label
+          deflabel = label
+          if config.has_key? :single_file
+            label = ''
           end
+
           if config.has_key? :ds_names
             command += " DEF:#{deflabel}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:AVERAGE"
           else
@@ -66,11 +70,11 @@ Pathname.new(RRD_PATH).each_child do |host_path|
 
         if config[:max]
           config[:order].each_with_index do |label, index|
-            if label == ''
-              deflabel = 'data'
-            else
-              deflabel = label
+            deflabel = label
+            if config.has_key? :single_file
+              label = ''
             end
+
             if config.has_key? :ds_names
               command += " DEF:#{deflabel}_max=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MAX"
             else
@@ -81,11 +85,11 @@ Pathname.new(RRD_PATH).each_child do |host_path|
 
         if config[:min]
           config[:order].each_with_index do |label, index|
-            if label == ''
-              deflabel = 'data'
-            else
-              deflabel = label
+            deflabel = label
+            if config.has_key? :single_file
+              label = ''
             end
+
             if config.has_key? :ds_names
               command += " DEF:#{deflabel}_min=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MIN"
             else
@@ -98,11 +102,11 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         ###########
         if config[:min]
           config[:order].each_with_index do |label, index|
-            if label == ''
-              deflabel = 'data'
-            else
-              deflabel = label
+            deflabel = label
+            if config.has_key? :single_file
+              label = ''
             end
+
             if config.has_key? :titles
               command += " LINE1:#{deflabel}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{config[:titles][index]} min"
             else
@@ -118,11 +122,11 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         end
 
         config[:order].each_with_index do |label, index|
-          if label == ''
-            deflabel = 'data'
-          else
-            deflabel = label
+          deflabel = label
+          if config.has_key? :single_file
+            label = ''
           end
+
           if config.has_key? :titles
             command += " #{config[:chart].upcase}:#{deflabel}\\#{config[:pallette][index]}:'#{config[:titles][index]} avg"
           else
@@ -138,11 +142,11 @@ Pathname.new(RRD_PATH).each_child do |host_path|
 
         if config[:max]
           config[:order].each_with_index do |label, index|
-            if label == ''
-              deflabel = 'data'
-            else
-              deflabel = label
+            deflabel = label
+            if config.has_key? :single_file
+              label = ''
             end
+
             if config.has_key? :titles
               command += " LINE1:#{deflabel}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{config[:titles][index]} max"
             else
