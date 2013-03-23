@@ -55,7 +55,7 @@ PLUGINS = {
       :max => true,
       :min => false
     },
-    "voltages-core" => {
+    "v-core" => {
       :y_axis_title => 'Volt',
       :prefix => 'voltage-',
       :order => %w{ C0 C1 },
@@ -65,7 +65,17 @@ PLUGINS = {
       :stack => false,
       :max => true,
       :min => true
+    },
+    "v-atx" => {
+      :y_axis_title => 'Volt',
+      :prefix => 'voltage-',
+      :order => %w{ 12P 50P 33 50N 12N },
+      :titles => ['12 V', '5 V', '3.3 V', '-5 V', '-12 V'],
+      :pallette => %w{ #FF6666 #66FF66 #6666FF #66FFF6 #FFF666 },
+      :chart => 'line2',
+      :stack => false,
+      :max => true,
+      :min => true
     }
-
   }
 }

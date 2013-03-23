@@ -77,34 +77,49 @@ Pathname.new(RRD_PATH).each_child do |host_path|
           end
         end
 
+        if config[:min]
+          config[:order].each_with_index do |label, index|
+            if config.has_key? :titles
+              command += " LINE1:#{label}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{config[:titles][index]} min"
+            else
+              command += " LINE1:#{label}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{label.capitalize} min"
+            end
+            command += ':STACK' if (config[:stack] and index > 0)
+            if index == config[:order].length - 1
+              command += "\\n'"
+            else
+              command += "'"
+            end
+          end
+        end
+
         config[:order].each_with_index do |label, index|
           if config.has_key? :titles
-            command += " #{config[:chart].upcase}:#{label}\\#{config[:pallette][index]}:'#{config[:titles][index]}'"
+            command += " #{config[:chart].upcase}:#{label}\\#{config[:pallette][index]}:'#{config[:titles][index]} avg"
           else
-            command += " #{config[:chart].upcase}:#{label}\\#{config[:pallette][index]}:'#{label.capitalize}'"
+            command += " #{config[:chart].upcase}:#{label}\\#{config[:pallette][index]}:'#{label.capitalize} avg"
           end
           command += ':STACK' if (config[:stack] and index > 0)
+          if index == config[:order].length - 1
+            command += "\\n'"
+          else
+            command += "'"
+          end
         end
 
         if config[:max]
           config[:order].each_with_index do |label, index|
             if config.has_key? :titles
-              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{config[:titles][index]} max'"
+              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{config[:titles][index]} max"
             else
-              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{label.capitalize} max'"
+              command += " LINE1:#{label}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{label.capitalize} max"
             end
             command += ':STACK' if (config[:stack] and index > 0)
-          end
-        end
-
-        if config[:min]
-          config[:order].each_with_index do |label, index|
-            if config.has_key? :titles
-              command += " LINE1:#{label}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{config[:titles][index]} min'"
+            if index == config[:order].length - 1
+              command += "\\n'"
             else
-              command += " LINE1:#{label}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{label.capitalize} min'"
+              command += "'"
             end
-            command += ':STACK' if (config[:stack] and index > 0)
           end
         end
 
