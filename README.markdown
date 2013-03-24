@@ -18,17 +18,17 @@ Look at example graphs, then read the configs.
 
 This is real, working output from my home server (config-freebsd-server.rb).
 
-![Example 1](../blob/master/graphs/kaer.eu.org-cpu-0-all-24h.png?raw=true)
-![Example 2](../blob/master/graphs/kaer.eu.org-df-home-all-7d.png?raw=true)
-![Example 3](../blob/master/graphs/kaer.eu.org-disk-ada0-octets-24h.png?raw=true)
-![Example 4](../blob/master/graphs/kaer.eu.org-interface-tun0-octets-24h.png?raw=true)
-![Example 5](../blob/master/graphs/kaer.eu.org-load-all-24h.png?raw=true)
-![Example 6](../blob/master/graphs/kaer.eu.org-mbmon-fan-24h.png?raw=true)
-![Example 7](../blob/master/graphs/kaer.eu.org-mbmon-temps-24h.png?raw=true)
-![Example 8](../blob/master/graphs/kaer.eu.org-mbmon-v-atx-24h.png?raw=true)
-![Example 9](../blob/master/graphs/kaer.eu.org-mbmon-v-core-24h.png?raw=true)
-![Example 10](../blob/master/graphs/kaer.eu.org-memory-all-24h.png?raw=true)
-![Example 11](../blob/master/graphs/kaer.eu.org-swap-all-24h.png?raw=true)
+![Example 1 ](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-cpu-0-all-24h.png)
+![Example 2 ](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-df-home-all-7d.png)
+![Example 3 ](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-disk-ada0-octets-24h.png)
+![Example 4 ](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-interface-tun0-octets-24h.png)
+![Example 5 ](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-load-all-24h.png)
+![Example 6 ](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-mbmon-fan-24h.png)
+![Example 7 ](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-mbmon-temps-24h.png)
+![Example 8 ](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-mbmon-v-atx-24h.png)
+![Example 9 ](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-mbmon-v-core-24h.png)
+![Example 10](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-memory-all-24h.png)
+![Example 11](https://raw.github.com/drbig/collectd-grapher/master/graphs/kaer.eu.org-swap-all-24h.png)
 
 ## Usage
 
