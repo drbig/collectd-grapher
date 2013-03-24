@@ -24,6 +24,61 @@ def highlight(html_color, amount)
   end.join
 end
 
+#
+#
+def build_draw(plugin_path, label, index, config, aggregator)
+  deflabel = label
+  if config.has_key? :single_file
+    label = ''
+  end
+
+  if aggregator != :average
+    command = " LINE1:#{deflabel}_#{aggregator}\\"
+    case aggregator
+    when :max
+      command += highlight(config[:pallette][index], -CONTRAST)
+    when :min
+      command += highlight(config[:pallette][index], CONTRAST)
+    else
+      command += config[:palette][index]
+    end
+  else
+    command = " #{config[:chart].upcase}:#{deflabel}_#{aggregator}\\#{config[:pallette][index]}"
+  end
+
+  if config.has_key? :titles
+    command += ":'#{config[:titles][index]}"
+  else
+    command += ":'#{label.capitalize}"
+  end
+
+  command += AGGREGATOR_LABELS[aggregator] if AGGREGATOR_LABELS.has_key? aggregator
+
+  if index == config[:order].length - 1
+    command += "\\n'"
+  else
+    command += "'"
+  end
+  command += ':STACK' if (config[:stack] and index > 0)
+
+  command
+end
+
+#
+#
+def build_def(plugin_path, label, index, config, aggregator)
+  deflabel = label
+  if config.has_key? :single_file
+    label = ''
+  end
+
+  if config.has_key? :ds_names
+    command = " DEF:#{deflabel}_#{aggregator}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:#{aggregator.to_s.upcase}"
+  else
+    command = " DEF:#{deflabel}_#{aggregator}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:#{aggregator.to_s.upcase}"
+  end
+end
+
 images = Array.new
 
 Pathname.new(RRD_PATH).each_child do |host_path|
@@ -50,115 +105,33 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         command += " -v '#{config[:y_axis_title]}'"
         command += (' ' + config[:options]) if config.has_key? :options
 
-        if (config.has_key? :single_file) # and (not config.has_key? :ds_names)
+        if config.has_key? :single_file # and (not config.has_key? :ds_names)
           config[:ds_names] = config[:order]
         end
 
         ## DEFS
         #######
         config[:order].each_with_index do |label, index|
-          deflabel = label
-          if config.has_key? :single_file
-            label = ''
-          end
-
-          if config.has_key? :ds_names
-            command += " DEF:#{deflabel}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:AVERAGE"
-          else
-            command += " DEF:#{deflabel}=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:AVERAGE"
-          end
-        end
-
-        if config[:max]
-          config[:order].each_with_index do |label, index|
-            deflabel = label
-            if config.has_key? :single_file
-              label = ''
-            end
-
-            if config.has_key? :ds_names
-              command += " DEF:#{deflabel}_max=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MAX"
-            else
-              command += " DEF:#{deflabel}_max=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:MAX"
-            end
-          end
-        end
-
-        if config[:min]
-          config[:order].each_with_index do |label, index|
-            deflabel = label
-            if config.has_key? :single_file
-              label = ''
-            end
-
-            if config.has_key? :ds_names
-              command += " DEF:#{deflabel}_min=#{plugin_path.join(config[:prefix] + label + '.rrd')}:#{config[:ds_names][index]}:MIN"
-            else
-              command += " DEF:#{deflabel}_min=#{plugin_path.join(config[:prefix] + label + '.rrd')}:value:MIN"
-            end
-          end
+          command += build_def(plugin_path, label, index, config, :average)
+          command += build_def(plugin_path, label, index, config, :max) if config[:max]
+          command += build_def(plugin_path, label, index, config, :min) if config[:min]
         end
 
         ## GRAPHING
         ###########
         if config[:min]
           config[:order].each_with_index do |label, index|
-            deflabel = label
-            if config.has_key? :single_file
-              label = ''
-            end
-
-            if config.has_key? :titles
-              command += " LINE1:#{deflabel}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{config[:titles][index]} min"
-            else
-              command += " LINE1:#{deflabel}_min\\#{highlight(config[:pallette][index], CONTRAST)}:'#{label.capitalize} min"
-            end
-            if index == config[:order].length - 1
-              command += "\\n'"
-            else
-              command += "'"
-            end
-            command += ':STACK' if (config[:stack] and index > 0)
+            command += build_draw(plugin_path, label, index, config, :min)
           end
         end
 
         config[:order].each_with_index do |label, index|
-          deflabel = label
-          if config.has_key? :single_file
-            label = ''
-          end
-
-          if config.has_key? :titles
-            command += " #{config[:chart].upcase}:#{deflabel}\\#{config[:pallette][index]}:'#{config[:titles][index]} avg"
-          else
-            command += " #{config[:chart].upcase}:#{deflabel}\\#{config[:pallette][index]}:'#{label.capitalize} avg"
-          end
-          if index == config[:order].length - 1
-            command += "\\n'"
-          else
-            command += "'"
-          end
-          command += ':STACK' if (config[:stack] and index > 0)
+          command += build_draw(plugin_path, label, index, config, :average)
         end
 
         if config[:max]
           config[:order].each_with_index do |label, index|
-            deflabel = label
-            if config.has_key? :single_file
-              label = ''
-            end
-
-            if config.has_key? :titles
-              command += " LINE1:#{deflabel}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{config[:titles][index]} max"
-            else
-              command += " LINE1:#{deflabel}_max\\#{highlight(config[:pallette][index], -CONTRAST)}:'#{label.capitalize} max"
-            end
-            if index == config[:order].length - 1
-              command += "\\n'"
-            else
-              command += "'"
-            end
-            command += ':STACK' if (config[:stack] and index > 0)
+            command += build_draw(plugin_path, label, index, config, :max)
           end
         end
 

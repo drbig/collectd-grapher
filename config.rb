@@ -5,7 +5,7 @@ RRD_PATH = '/mnt/drbig/collectd'
 GRAPH_PATH = Dir.pwd
 
 CONTRAST = 6
-
+AGGREGATOR_LABELS = { :average => ' avg', :max => ' max', :min => ' min' }
 RESOLUTIONS = %w{ 24h 7d 100d }
 
 PLUGINS = {
