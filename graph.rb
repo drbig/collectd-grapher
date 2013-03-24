@@ -2,8 +2,24 @@
 # coding: utf-8
 #
 
+require 'optparse'
+
+def die(msg)
+  STDERR.puts msg
+  exit(2)
+end
+
+opts = { :debug => false, :paths => false }
+oparser = OptionParser.new do |o|
+  o.banner = "Usage: #{$0} [-d] [-p] config.rb"
+  o.on('-d', '--debug', 'Print debugging statements') { opts[:debug] = true }
+  o.on('-p', '--paths', 'Print paths of generated charts') { opts[:paths] = true }
+end
+oparser.parse! or die(oparser)
+ARGV.length == 1 or die(oparser)
+
+require_relative ARGV.shift
 require 'pathname'
-require_relative 'config.rb'
 
 #
 #
@@ -80,24 +96,24 @@ def build_def(plugin_path, label, index, config, aggregator)
 end
 
 images = Array.new
+exit_status = 0
 
 Pathname.new(RRD_PATH).each_child do |host_path|
   next if host_path.file?
   host_name = host_path.basename
-  puts host_name
+  puts host_name if opts[:debug]
 
   host_path.each_child do |plugin_path|
     next if plugin_path.file?
     plugin_name = plugin_path.basename.to_s.split('-').first.to_sym
     next unless PLUGINS.member? plugin_name
 
-    puts plugin_path
+    puts plugin_path if opts[:debug]
 
     RESOLUTIONS.each do |res|
       PLUGINS[plugin_name].each_pair do |name, config|
 
         graph_path = File.join(GRAPH_PATH, "#{host_name}-#{plugin_path.basename}-#{name}-#{res}.png")
-        images << graph_path
 
         command = "rrdtool graph #{graph_path}"
         command += " --start end-#{res}"
@@ -110,6 +126,7 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         end
 
         ## DEFS
+        # Order doesn't matter, so one loop will do.
         #######
         config[:order].each_with_index do |label, index|
           command += build_def(plugin_path, label, index, config, :average)
@@ -118,6 +135,7 @@ Pathname.new(RRD_PATH).each_child do |host_path|
         end
 
         ## GRAPHING
+        # Order does matter, so we have to have more loops.
         ###########
         if config[:min]
           config[:order].each_with_index do |label, index|
@@ -135,11 +153,23 @@ Pathname.new(RRD_PATH).each_child do |host_path|
           end
         end
 
-        puts command
-        Kernel.system(command)
+        ## EXEC
+        #######
+        command += ' 2>&1'
+        puts command if opts[:debug]
+        output = IO.popen(command) {|io| io.read}
+        if $?.success?
+          images << graph_path
+        else
+          exit_status = 2
+          STDERR.puts "Error at #{graph_path}"
+          STDERR.puts output
+        end
+
       end
     end
   end
 end
 
-puts images.sort.join("\n")
+puts images.sort.join("\n") if opts[:paths]
+exit(exit_status)
