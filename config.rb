@@ -17,8 +17,8 @@ PLUGINS = {
       :pallette => %w{ #AAFFAA #AAAAFF #FFAAAA #AAFFFF #FFAAFF },
       :chart => 'area',
       :stack => false,
-      :max => true
-    }
+      :max => true,
+    },
   },
   :memory => {
     "all" => {
@@ -30,7 +30,7 @@ PLUGINS = {
       :stack => true,
       :max => true,
       :min => false,
-    }
+    },
   },
   :df => {
     "all" => {
@@ -42,7 +42,8 @@ PLUGINS = {
       :stack => false,
       :max => true,
       :min => false,
-    }
+      :options => '-l 0'
+    },
   },
   :interface => {
     "octets" => {
@@ -56,7 +57,7 @@ PLUGINS = {
       :stack => false,
       :max => true,
       :min => false,
-    }
+    },
   }, 
   :disk => {
     "octets" => {
@@ -70,21 +71,34 @@ PLUGINS = {
       :stack => false,
       :max => true,
       :min => false,
-    }
+    },
   }, 
   :df => {
     "all" => {
       :y_axis_title => 'Bytes',
       :prefix => 'df_complex-',
-      :order => %w{ used },
-      :pallette => %w{ #FFAAAA },
+      :order => %w{ used free },
+      :pallette => %w{ #FFAAAA #AAFFAA },
       :chart => 'area',
-      :stack => false,
+      :stack => true,
       :max => true,
       :min => false,
-    }
-  }, 
- 
+      :options => '-l 0',
+    },
+  },
+  :swap => {
+    "all" => {
+      :y_axis_title => 'Bytes',
+      :prefix => 'swap-',
+      :order => %w{ used free },
+      :pallette => %w{ #FFAAAA #AAFFAA },
+      :chart => 'area',
+      :stack => true,
+      :max => true,
+      :min => false,
+      :options => '-l 0',
+    },
+  },
   :load => {
     "all" => {
       :y_axis_title => 'Load',
@@ -97,7 +111,7 @@ PLUGINS = {
       :stack => false,
       :max => true,
       :min => false,
-    }
+    },
   },
   :mbmon => {
     "temps" => {
@@ -109,7 +123,8 @@ PLUGINS = {
       :chart => 'line2',
       :stack => false,
       :max => true,
-      :min => false
+      :min => false,
+      :options => '-l 0',
     },
     "fan" => {
       :y_axis_title => 'RPM',
@@ -120,7 +135,8 @@ PLUGINS = {
       :chart => 'line2',
       :stack => false,
       :max => true,
-      :min => false
+      :min => false,
+      :options => '-l 0',
     },
     "v-core" => {
       :y_axis_title => 'Volt',
@@ -131,7 +147,7 @@ PLUGINS = {
       :chart => 'line2',
       :stack => false,
       :max => true,
-      :min => true
+      :min => true,
     },
     "v-atx" => {
       :y_axis_title => 'Volt',
@@ -142,7 +158,7 @@ PLUGINS = {
       :chart => 'line2',
       :stack => false,
       :max => true,
-      :min => true
-    }
-  }
+      :min => true,
+    },
+  },
 }
