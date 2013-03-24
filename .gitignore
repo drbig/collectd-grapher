@@ -1,7 +1,0 @@
-# ignore internal stuff
-doc/*
-.yardoc/*
-.#*
-
-# ignore images
-*.png
